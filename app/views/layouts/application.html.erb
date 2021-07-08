@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Menu</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+    <nav>
+      <% if current_admin %>
+        <ul>
+          <li><%= link_to 'Menu', root_path%></li>
+          <li><%= link_to 'Categories', categories_path%></li>
+        </ul>
+        <%= current_admin.first_name %> <%= current_admin.last_name%>
+        <%= link_to 'Exit', destroy_admin_session_path, method: :delete%>
+      <%end%>
+      <p class="notice"><%= notice %></p>
+      <p class="alert"><%= alert %></p>
+    </nav>
+    <main>
+      <%= yield %>
+    </main>
+  </body>
+</html>

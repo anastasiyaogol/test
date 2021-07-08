@@ -1,0 +1,8 @@
+<h1>Edit category</h1>
+	<%= form_with scope: :category, url: category_update_path(@category), method: :patch do |c|%>
+		<div>
+			<%=c.label :name %>
+			<%= c.text_field :name,required: true,minlength: 2,placeholder:"Category" %>
+		<div>
+		<%=c.submit "Submit category"%>
+	<%end%>
