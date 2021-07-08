@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  dish_id: 
+  day_price: 1.5
+  date_day_menu: 2021-06-30
+
+two:
+  dish_id: 
+  day_price: 1.5
+  date_day_menu: 2021-06-30

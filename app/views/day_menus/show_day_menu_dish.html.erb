@@ -1,0 +1,19 @@
+<h3><%=@day_menu.day_menu_dish_name%></h3>
+<p>
+	<div>
+		Details
+	</div>
+	<div>
+		<div>Quantity: <%=@day_menu.day_menu_dish_quantity%></div>
+		<div>Measure:<%=@day_menu.day_menu_dish_measure%></div>
+		<div>Price: <%=@day_menu.day_price%></div>
+		<div>
+			<%@categories.each do |category|%>
+				<%if category.id == @day_menu.day_menu_category_id%>
+					<span>Category: </span><%=category.name%>
+				<%end%>
+			<%end%>
+		</div>
+		<div>Date: <%=@day_menu.date_day_menu%></div>
+	</div>
+</p>
