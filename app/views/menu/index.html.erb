@@ -1,68 +1,16 @@
 <h1>MENU</h1>
-<h3>New category</h3>
-<%= form_with model:@category do |c|%>
-	<div>
-		<%=c.label :name %>
-		<%= c.text_field :name,required: true,minlength: 2,placeholder:"Category" %>
-	<div>
-	<%=c.submit "Submit category"%>
-<%end%>
-<h3><%= link_to 'New dish',dish_new_path%></h3>
 <h1>Categories</h1>
 <% @categories.each do |category|%>
 	<h2><%= category.name%></h2>
-	<%= link_to 'More details',show_category_path(category)%>
+	<%= link_to 'More details',category_path(category)%>
 	<%= link_to 'Edit category',edit_category_path(category)%>
-	<%= link_to 'Destroy category',destroy_category_path(category),data:{method: :delete,confirm:'Are you sure?'}%>
+	<%= link_to 'Destroy category',category_path(category),data:{method: :delete,confirm:'Are you sure?'}%>
 	<% @dishes.each do |dish|%>
 		<%if category.id == dish.category_id%>
-			<h4><%= dish.name%> <%=dish.quantity%> <%=dish.measure%> <%=dish.price%><span> grn</span></h4>
-			<%= link_to 'More details',show_dish_path(dish)%>
+			<h4><%= dish.name%> <%=dish.units%> <%=dish.measure_id%> <%=dish.measure_id%></h4>
+			<%= link_to 'More details',dish_path(dish)%>
 			<%= link_to 'Edit dish',edit_dish_path(dish)%>
-			<%= link_to 'Destroy dish',destroy_dish_path(dish),data:{method: :delete,confirm:'Are you sure?'}%>
-			<%= link_to 'Add dish to the Day Menu',new_day_menu_path(dish)%>
-		<%end%>
-	<%end%>
-<%end%>
-<h1>Day Menu </h1>
-<%if @event != nil%>
-	<%@array = []%>
-	<%@event.each do |d|%>
-		<%d.each_with_index do |c, i| if i == 1%>
-			<%if c.size == 1 %>
-				<%c = '0'+c%>
-			<%end%>
-			<%@array.push(c)%>
-		<%end%>
-		<%end%>
-	<%end%>
-<%end%>
-<%if @array != nil%>
-	<%@data_select = @array.join("-")%>
-	<%year, month, day = @data_select.split('-').map(&:to_i)%>
-	<%@data_select = Date.new(year, month, day)%>
-<% end %>
-<%= form_with scope: :menu, url: menu_date_path(:event),permitted: true, method: :post do |m| %>
-  <%= m.date_select :event %>
-  <%=m.submit "Submit date of the Day Menu"%>
-<% end %>
-<% @categories.each do |category|%>
-	<% quantity_dishes_in_day_menu = 0%>
-	<% @day_menus.each do |day_menu|%>
-		<%if @data_select == nil%>
-			<%@data_select = Date.today%>
-		<%end%>
-		<%if day_menu.date_day_menu == @data_select%>
-			<%if category.id == day_menu.day_menu_category_id%>
-				<%if quantity_dishes_in_day_menu == 0%>
-					<h2><%= category.name%></h2>
-				<%end%>
-				<% quantity_dishes_in_day_menu = quantity_dishes_in_day_menu + 1%>
-				<h4><%= day_menu.day_menu_dish_name%> <%= day_menu.day_menu_dish_quantity%> <%= day_menu.day_menu_dish_measure%> <%= day_menu.day_price%> grn</h4>
-				<%= link_to 'More details',show_day_menu_dish_path(day_menu)%>
-				<%= link_to 'Edit dish of the Day Menu',edit_day_menu_dish_path(day_menu)%>
-				<%= link_to 'Destroy dish of the Day Menu',destroy_day_menu_dish_path(day_menu),data:{method: :delete,confirm:'Are you sure?'}%>
-			<%end%>
+			<%= link_to 'Destroy dish',dish_path(dish),data:{method: :delete,confirm:'Are you sure?'}%>
 		<%end%>
 	<%end%>
 <%end%>

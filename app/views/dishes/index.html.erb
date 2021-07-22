@@ -1,0 +1,8 @@
+<h1>Dishes</h1>
+	<h3><%= link_to 'New dish',new_dish_path%></h3>
+	<% @dishes.each do |dish|%>
+		<h4><%= dish.name%> <%=dish.units%> <%=dish.measure.name%> <span>Pricing type: </span><%=dish.pricing_types.name%></h4>
+		<%= link_to 'More details',dish_path(dish)%>
+		<%= link_to 'Edit dish',edit_dish_path(dish)%>
+		<%= link_to 'Destroy dish',dish_path(dish),data:{method: :delete,confirm:'Are you sure?'}%>
+	<%end%>

@@ -1,0 +1,11 @@
+<div class="day_menus_dish_fields" >
+    <%= f.label :dish_id, 'Dish'%>
+    <%= f.select :dish_id, Dish.all.map{ |c| [c.name, c.id] },{prompt: 'Select Dish'}, {class:'dish_edited'} %>
+    <span></span>
+    <a href='' class = 'set_price'></a>
+    <%= f.label :day_price, 'Day Price' %>
+    <%= f.number_field :day_price, {class:'day_price'}%>
+
+    <%= f.hidden_field :_destroy %>
+    <%= link_to_remove_fields 'Remove dish from the Day Menu', 'div',{} %>
+  </div>

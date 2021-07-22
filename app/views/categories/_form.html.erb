@@ -1,0 +1,7 @@
+<%= form_with model:@category do |c|%>
+	<div>
+		<%=c.label :name %>
+		<%= c.text_field :name,required: true,minlength: 2,placeholder:"Category" %>
+	<div>
+	<%=c.submit "Submit category"%>
+<%end%>

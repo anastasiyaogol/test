@@ -5,6 +5,9 @@ ruby '2.7.3'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'devise'
+gem 'jquery-rails'
+gem 'link_to_add_fields'
+gem 'pry', '~> 0.13.1'
 gem 'rails', '~> 6.1.4'
 # Use sqlite3 as the database for Active Record
 gem 'pg'

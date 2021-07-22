@@ -1,0 +1,7 @@
+<h1>Day Menu </h1>
+<%= link_to 'New Day Menu',new_day_menu_path%>
+<% @day_menus.each do |day_menu|%>
+	<h4><%= day_menu.date%>
+	<%= link_to 'More details',day_menu_path(day_menu)%>
+	<%= link_to 'Destroy Day Menu',day_menu_path(day_menu),data:{method: :delete,confirm:'Are you sure?'}%>
+<%end%>

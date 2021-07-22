@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_04_181228) do
+ActiveRecord::Schema.define(version: 2021_07_12_134809) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,25 +36,49 @@ ActiveRecord::Schema.define(version: 2021_07_04_181228) do
   end
 
   create_table "day_menus", force: :cascade do |t|
-    t.bigint "dish_id"
-    t.float "day_price"
-    t.date "date_day_menu"
+    t.date "date"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["dish_id"], name: "index_day_menus_on_dish_id"
+  end
+
+  create_table "day_menus_dishes", force: :cascade do |t|
+    t.bigint "dish_id"
+    t.float "day_price"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "day_menu_id"
+    t.index ["day_menu_id"], name: "index_day_menus_dishes_on_day_menu_id"
+    t.index ["dish_id"], name: "index_day_menus_dishes_on_dish_id"
   end
 
   create_table "dishes", force: :cascade do |t|
     t.string "name"
-    t.integer "quantity"
-    t.string "measure"
-    t.float "price"
+    t.integer "units"
     t.bigint "category_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "measure_id"
+    t.bigint "pricing_types_id"
     t.index ["category_id"], name: "index_dishes_on_category_id"
+    t.index ["measure_id"], name: "index_dishes_on_measure_id"
+    t.index ["pricing_types_id"], name: "index_dishes_on_pricing_types_id"
   end
 
-  add_foreign_key "day_menus", "dishes"
+  create_table "measures", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "pricing_types", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  add_foreign_key "day_menus_dishes", "day_menus"
+  add_foreign_key "day_menus_dishes", "dishes"
   add_foreign_key "dishes", "categories"
+  add_foreign_key "dishes", "measures"
+  add_foreign_key "dishes", "pricing_types", column: "pricing_types_id"
 end

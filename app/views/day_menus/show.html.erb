@@ -1,0 +1,14 @@
+<h1><%=@day_menu.date%></h1>
+<h3><%= link_to 'Edit Day Menu',edit_day_menu_path(@day_menu)%></h3>
+<%@day_menu_grouped_by_categories.keys.each do |day_menu_category|%>
+	<h3><%=day_menu_category%></h3>
+		<%@day_menu_grouped_by_categories[day_menu_category].each do |day_menu|%>
+		<div>
+			<span><%=day_menu.dish.name%></span>
+			<span><%=day_menu.dish.units%></span>
+			<span><%=day_menu.dish.measure.name%></span>
+			<span><%=day_menu.day_price%> grn</span>
+			<span>Pricing type: <%=day_menu.dish.pricing_types.name%></span>
+		</div>
+	<%end%>
+<%end%>

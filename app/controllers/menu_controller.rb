@@ -11,7 +11,7 @@ class MenuController < ApplicationController
  		end
  		
  	end
- 	def create_category
+ 	def create
  		@category = Category.new category_params
  		if @category.save
  			redirect_to root_path
