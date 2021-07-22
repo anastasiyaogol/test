@@ -1,0 +1,65 @@
+<% if @day_menu.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@day_menu.errors.count, "error") %> prohibited this article from being saved:</h2>
+    <ul>
+    <% @day_menu.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
+<%= form_with model:@day_menu do |f|%>
+	<%=f.label :date %>
+	<%= f.date_select :date%>
+	<%= f.fields_for :day_menus_dishes do |ff| %>
+  		<%= render partial: "day_menus_dish_fields", locals: { f: ff } %>
+	<% end %>
+	<%= link_to_add_fields 'Add dish to the Day Menu', f, :day_menus_dishes,{} %><br>
+	<%=f.submit "Submit Day Menu"%>
+<%end%>
+<script>
+	$(document).on('ready',function() {
+    	$(document).on('change', '.dish_edited',handler);
+    	$('.dish_edited').trigger('change');
+	});
+ 	function handler(){
+ 		let date = '';
+	    let day_price = '';
+		var select_dish = $( this );
+		var value_select_dish = select_dish.val();	
+		if (value_select_dish != '') {	
+	       $.ajax({
+	         url: "/dishes/"+value_select_dish,
+	         method: "get",
+	         dataType:"json",
+	         success: function(data){
+	         	if (data.day_menus.length != 0) {
+	         		date = data.day_menus[data.day_menus.length-1].date;
+	         	}
+	         	else {
+	         		date = 'Not found'
+	         	}
+	         	if (data.day_menus_dishes.length != 0) {
+	         		day_price = data.day_menus_dishes[data.day_menus_dishes.length-1].day_price
+	         	}
+	         	else {
+	         		day_price = ' '
+	         	}
+	         	select_dish.next('span')[0].innerHTML = data.units+' '+data.measure.name+' '+data.pricing_types.name+' Previous price on date: '+date+' was ';
+	         	select_dish.closest('.day_menus_dish_fields').find('.set_price').html(day_price);
+	         },
+	         error: function() {
+	         	
+	         }
+	       });
+	    }
+	    else {
+	    	select_dish.next('span')[0].innerHTML = '';
+	        select_dish.closest('.day_menus_dish_fields').find('.set_price').html('');
+	    }
+	}
+	$(document).on('click','.set_price', function (e) {
+		e.preventDefault();
+		$(this).closest('.day_menus_dish_fields').find('.day_price').val($(this).html());
+	});
+</script>

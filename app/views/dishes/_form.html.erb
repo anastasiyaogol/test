@@ -1,0 +1,23 @@
+<%= form_with model:@dish do |d|%>
+		<div>
+			<%=d.label :name %>
+			<%= d.text_field :name,required: true,minlength: 2,placeholder:"Dish" %>
+		<div>
+		<div>
+			<%=d.label :units %>
+			<%= d.number_field :units,required: true,minlength: 1,placeholder:"Units" %>
+		<div>
+		<div>
+			<%=d.label :measure %>
+			<%= d.select :measure_id, Measure.all.map{ |c| [c.name, "#{c.id}"] }%>
+		<div>
+		<div>
+			<%=d.label :pricing_types_id %>
+			<%= d.select :pricing_types_id, PricingTypes.all.map{ |c| [c.name, "#{c.id}"] }%>
+		<div>
+		<div>
+			<%=d.label :category_id %>
+			<%= d.select :category_id, Category.all.map{ |c| [c.name, "#{c.id}"] }%>
+		<div>
+		<%=d.submit "Submit dish"%>
+	<%end%>

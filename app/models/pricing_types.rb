@@ -1,0 +1,2 @@
+class PricingTypes < ApplicationRecord
+end

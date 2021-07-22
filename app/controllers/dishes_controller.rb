@@ -1,35 +1,52 @@
 class DishesController < ApplicationController 
-	def new_dish
+	def index
+		@categories = Category.all
+		@dishes = Dish.all
+ 		if params[:menu] != nil
+ 			@event = params[:menu]
+ 		end
+ 		
+ 	end
+	def new
 		@dish = Dish.new
 	end
-	def create_dish
+	def create
 		@dish = Dish.new dish_params
 		if @dish.save
-			redirect_to root_path
+			redirect_to dishes_path
 		else
-			render :new_dish
+			render :new
 		end
 	end
- 	def edit_dish
+ 	def edit
  		@dish = Dish.find_by id: params[:id]
  	end
- 	def update_dish
- 		@dish_update = Dish.find_by id: params[:id]
- 		if @dish_update.update dish_params
- 			redirect_to root_path
+ 	def update
+ 		@dish = Dish.find_by id: params[:id]
+ 		if @dish.update dish_params
+ 			redirect_to dishes_path
+ 		else
+ 			render :edit
  		end
  	end
- 	def destroy_dish
- 		@dish = Dish.find_by id: params[:id]
- 		@dish.destroy
- 		redirect_to root_path
+ 	def destroy
+		@dish = Dish.find_by id: params[:id]
+		 if @dish.day_menus_dishes.any?
+			redirect_to dishes_path, notice: "Dish #{@dish.name} has been decleared in the Day Menu"
+		else 
+ 			@dish.destroy
+ 			redirect_to dishes_path,notice:"Dish #{@dish.name} has been successfully destroyed"
+		end 		
  	end
- 	def show_dish
- 		@dishes = Dish.joins("JOIN categories ON categories.id = dishes.category_id").select("dishes.*,categories.name AS dishes_category_name")
- 		@dish = @dishes.find_by id: params[:id]
+ 	def show
+ 		@dish = Dish.find params[:id]
+		respond_to do |format|
+  			format.html
+  			format.json { render :json => @dish.to_json(:include => [:pricing_types,:measure,:day_menus_dishes,:day_menus]) }
+		end
  	end
  	private 
  	def dish_params
- 		params.require(:dish).permit(:name,:quantity,:measure,:price,:category_id)
+ 		params.require(:dish).permit(:name,:units,:measure_id,:pricing_types_id,:category_id)
  	end
 end
