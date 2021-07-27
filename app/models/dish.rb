@@ -9,4 +9,16 @@ class Dish < ApplicationRecord
 	validates :measure_id,presence:true,length:{minimum:1},numericality: { only_integer: true }
 	validates :pricing_types_id,presence:true,length:{minimum:1},numericality: { only_integer: true }
 	validates :category_id,presence:true,length:{minimum:1},numericality: { only_integer: true }
+
+	def self.by_name(dish)
+ 		where("dishes.name LIKE ? ", "%#{dish}%")
+	end
+
+	def self.by_category_name(category)
+ 		joins(:category).where("categories.name LIKE ? ", "%#{category}%")
+	end
+
+	def self.by_pricing_type(pricing_type)
+ 		joins(:pricing_types).where("pricing_types.id =  #{pricing_type}")
+	end
 end

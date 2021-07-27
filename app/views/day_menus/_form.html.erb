@@ -23,40 +23,54 @@
     	$('.dish_edited').trigger('change');
 	});
  	function handler(){
- 		let date = '';
-	    let day_price = '';
-		var select_dish = $( this );
-		var value_select_dish = select_dish.val();	
-		if (value_select_dish != '') {	
-	       $.ajax({
-	         url: "/dishes/"+value_select_dish,
-	         method: "get",
+		var $currentDishSelect = $(this);
+		var pricingDescription = $currentDishSelect.next('span.pricing_description');
+		var lastKnownDate = $currentDishSelect.closest('.day_menus_dish_fields').
+        			find('span.last_known_date');
+        var lastKnownPrice = $currentDishSelect.closest('.day_menus_dish_fields').
+    	            find('.set_price');
+
+    	pricingDescription.html('');
+    	lastKnownDate.html('');
+    	lastKnownPrice.html('');
+
+		var selectedDishId = $currentDishSelect.val();
+		if (!selectedDishId) {
+			return;
+		}
+
+		 $.get({
+	         url: "/dishes/" + selectedDishId,
 	         dataType:"json",
-	         success: function(data){
-	         	if (data.day_menus.length != 0) {
-	         		date = data.day_menus[data.day_menus.length-1].date;
-	         	}
-	         	else {
-	         		date = 'Not found'
-	         	}
-	         	if (data.day_menus_dishes.length != 0) {
-	         		day_price = data.day_menus_dishes[data.day_menus_dishes.length-1].day_price
-	         	}
-	         	else {
-	         		day_price = ' '
-	         	}
-	         	select_dish.next('span')[0].innerHTML = data.units+' '+data.measure.name+' '+data.pricing_types.name+' Previous price on date: '+date+' was ';
-	         	select_dish.closest('.day_menus_dish_fields').find('.set_price').html(day_price);
+	         success: function(dish){
+	         	pricingDescription.html(composeTextForDishDescription(dish));
+	          	lastKnownPrice.html(composeTextForLastPrice(dish.day_menus_dishes));
+	          	lastKnownDate.html(composeTextForLastDate(dish.day_menus_dishes));
 	         },
-	         error: function() {
-	         	
+	         error: function(data) {
+	         	console.log(data);
 	         }
-	       });
-	    }
-	    else {
-	    	select_dish.next('span')[0].innerHTML = '';
-	        select_dish.closest('.day_menus_dish_fields').find('.set_price').html('');
-	    }
+	     });	
+
+	}
+	function composeTextForDishDescription(dish) {
+		return dish.units+' '+dish.measure.name+' '+dish.pricing_types.name;
+	}
+	function composeTextForLastPrice(dayMenus) {
+		if (dayMenus.length != 0) {
+			return dayMenus[dayMenus.length-1].day_price;
+		}
+		else {
+			return ''
+		}
+	}
+	function composeTextForLastDate(dayMenus) {
+		if (dayMenus.length != 0) {
+			return 'Last mention in the Day Menu '+dayMenus[dayMenus.length-1].day_menu.date;
+		}
+		else {
+			return 'Last mention in the Day Menu Not found'
+		}
 	}
 	$(document).on('click','.set_price', function (e) {
 		e.preventDefault();
