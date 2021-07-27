@@ -1,4 +1,13 @@
 <h1>Dishes</h1>
+	<%= form_with model: @search, url: dishes_path, method: :get do |form| %>
+  		<%= form.label :dish, "Search for dish name:" %>
+  		<%= form.text_field :dish %>
+  		<%= form.label :category, "Search for category name:" %>
+  		<%= form.text_field :category %>
+  		<%= form.label :pricing_type, "Search for pricing type:" %>
+  		<%= form.select :pricing_type , PricingTypes.all.map{ |c| [c.name, "#{c.id}"] },{prompt: 'Select Pricing type'} %>
+  		<%= form.submit "Search" %>
+	<% end %>
 	<h3><%= link_to 'New dish',new_dish_path%></h3>
 	<% @dishes.each do |dish|%>
 		<h4><%= dish.name%> <%=dish.units%> <%=dish.measure.name%> <span>Pricing type: </span><%=dish.pricing_types.name%></h4>
