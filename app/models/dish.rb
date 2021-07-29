@@ -21,4 +21,8 @@ class Dish < ApplicationRecord
 	def self.by_pricing_type(pricing_type)
  		joins(:pricing_types).where("pricing_types.id =  #{pricing_type}")
 	end
+
+	def self.sort_by_field(sort_by_field,order_by)
+ 		order(sort_by_field => order_by)
+ 	end
 end

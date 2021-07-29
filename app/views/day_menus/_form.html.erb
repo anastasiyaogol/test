@@ -10,13 +10,15 @@
 <% end %>
 <%= form_with model:@day_menu do |f|%>
 	<%=f.label :date %>
-	<%= f.date_select :date%>
+	<%= f.date_field :date, {class:'date_edited'} %>
 	<%= f.fields_for :day_menus_dishes do |ff| %>
   		<%= render partial: "day_menus_dish_fields", locals: { f: ff } %>
 	<% end %>
 	<%= link_to_add_fields 'Add dish to the Day Menu', f, :day_menus_dishes,{} %><br>
 	<%=f.submit "Submit Day Menu"%>
 <%end%>
+
+
 <script>
 	$(document).on('ready',function() {
     	$(document).on('change', '.dish_edited',handler);
@@ -26,26 +28,36 @@
 		var $currentDishSelect = $(this);
 		var pricingDescription = $currentDishSelect.next('span.pricing_description');
 		var lastKnownDate = $currentDishSelect.closest('.day_menus_dish_fields').
-        			find('span.last_known_date');
-        var lastKnownPrice = $currentDishSelect.closest('.day_menus_dish_fields').
-    	            find('.set_price');
+        			                           find('span.last_known_date');
+
 
     	pricingDescription.html('');
     	lastKnownDate.html('');
-    	lastKnownPrice.html('');
+
 
 		var selectedDishId = $currentDishSelect.val();
+		var selectedDate = $('.date_edited').val();
 		if (!selectedDishId) {
 			return;
 		}
 
 		 $.get({
-	         url: "/dishes/" + selectedDishId,
+	         url: "/day_menus_dishes",
+	         data: {
+        		date_less: selectedDate,
+        		dish: selectedDishId,
+        		records_number: 1,
+        		sort_by_field: 'date',
+        		order_by: 'desc'
+    		},
 	         dataType:"json",
-	         success: function(dish){
-	         	pricingDescription.html(composeTextForDishDescription(dish));
-	          	lastKnownPrice.html(composeTextForLastPrice(dish.day_menus_dishes));
-	          	lastKnownDate.html(composeTextForLastDate(dish.day_menus_dishes));
+	         success: function(dayMenuDishes){
+	         	console.log(dayMenuDishes)
+	         	if(dayMenuDishes.length != 0) {
+	         		var firstDayMenuDish = dayMenuDishes[0];
+		         	pricingDescription.html(composeTextForDishDescription(firstDayMenuDish));
+		          	lastKnownDate.html(composeTextForLastPrice(firstDayMenuDish))
+		        }
 	         },
 	         error: function(data) {
 	         	console.log(data);
@@ -53,24 +65,23 @@
 	     });	
 
 	}
-	function composeTextForDishDescription(dish) {
-		return dish.units+' '+dish.measure.name+' '+dish.pricing_types.name;
+	function composeTextForDishDescription(dayMenu) {
+		return dayMenu.dish.units + 
+		       ' ' + 
+		       dayMenu.dish.measure.name + 
+		       ' ' + 
+		       dayMenu.dish.pricing_types.name;
 	}
 	function composeTextForLastPrice(dayMenus) {
-		if (dayMenus.length != 0) {
-			return dayMenus[dayMenus.length-1].day_price;
-		}
-		else {
-			return ''
-		}
+			return "Last Known Price: " + 
+			       "<a href='' class = 'set_price'>" +
+			         dayMenus.day_price +
+			       "</a> at " +
+			       dayMenus.day_menu.date;
 	}
 	function composeTextForLastDate(dayMenus) {
-		if (dayMenus.length != 0) {
-			return 'Last mention in the Day Menu '+dayMenus[dayMenus.length-1].day_menu.date;
-		}
-		else {
-			return 'Last mention in the Day Menu Not found'
-		}
+			return 'Last mention in the Day Menu ' + 
+			        dayMenus.day_menu.date;
 	}
 	$(document).on('click','.set_price', function (e) {
 		e.preventDefault();

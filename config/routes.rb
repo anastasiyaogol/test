@@ -5,6 +5,6 @@ Rails.application.routes.draw do
   	resources :categories
   	resources :dishes
   	resources :day_menus
-  	resources :day_menus_dish_params, only: [:index]
+  	resources :day_menus_dishes, only: [:index]
   	root 'menu#index'
 end

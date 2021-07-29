@@ -1,6 +1,6 @@
 class DayMenusController < ApplicationController 
 	def index
-		@day_menus = DayMenu.all
+		@day_menus = DayMenu.all.page(params[:page]).per(5)
  	end
 
 	def new
