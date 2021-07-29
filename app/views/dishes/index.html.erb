@@ -6,6 +6,10 @@
   		<%= form.text_field :category %>
   		<%= form.label :pricing_type, "Search for pricing type:" %>
   		<%= form.select :pricing_type , PricingTypes.all.map{ |c| [c.name, "#{c.id}"] },{prompt: 'Select Pricing type'} %>
+  		<%= form.label :sort_by_field, "Sort by field:" %>
+  		<%= form.select :sort_by_field , ['date','day_price','dishes.name','dishes.units'],{prompt: 'Select sorting type'} %>
+  		<%= form.label :order_by, "Order by:" %>
+  		<%= form.select :order_by , ['desc','asc'],{prompt: 'Select order type'} %>
   		<%= form.submit "Search" %>
 	<% end %>
 	<h3><%= link_to 'New dish',new_dish_path%></h3>
@@ -15,3 +19,5 @@
 		<%= link_to 'Edit dish',edit_dish_path(dish)%>
 		<%= link_to 'Destroy dish',dish_path(dish),data:{method: :delete,confirm:'Are you sure?'}%>
 	<%end%>
+<h3><%= paginate @dishes %></h3>
+

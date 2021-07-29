@@ -1,7 +1,7 @@
 class DishesController < ApplicationController 
 	def index
-		@dishes = Dish.all
-		@search = SearchParams.new(params[:search_params] || {})
+		@dishes = Dish.all.page(params[:page]).per(5)
+		@search = DishSearchParams.new(params[:dish_search_params] || {})
 		@dishes = @search.apply_filters(@dishes)
  	end
 
