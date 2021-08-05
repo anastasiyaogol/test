@@ -1,0 +1,14 @@
+<h1>Order on Date: <%= @order.day_menu.date %></h1>
+<h3><%= link_to 'Edit Order',edit_order_path(@order)%></h3>
+<%@order_grouped_by_categories.keys.each do |order_category|%>
+	<h3><%=order_category%></h3>
+		<%@order_grouped_by_categories[order_category].each do |order|%>
+		<div>
+			<span><%=order.day_menus_dish.dish.name%></span>
+			<span><%=order.quantity%></span>
+			<span><%=order.day_menus_dish.dish.measure.name%></span>
+			<span><%=order.price%> grn</span>
+			<span>Pricing type: <%=order.day_menus_dish.dish.pricing_types.name%></span>
+		</div>
+	<%end%>
+<%end%>

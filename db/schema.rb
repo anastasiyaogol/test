@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_12_134809) do
+ActiveRecord::Schema.define(version: 2021_07_29_121528) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -70,6 +70,25 @@ ActiveRecord::Schema.define(version: 2021_07_12_134809) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "order_items", force: :cascade do |t|
+    t.integer "quantity"
+    t.float "price"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "order_id"
+    t.bigint "day_menus_dish_id"
+    t.index ["day_menus_dish_id"], name: "index_order_items_on_day_menus_dish_id"
+    t.index ["order_id"], name: "index_order_items_on_order_id"
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.float "total_price"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "day_menu_id"
+    t.index ["day_menu_id"], name: "index_orders_on_day_menu_id"
+  end
+
   create_table "pricing_types", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
@@ -81,4 +100,7 @@ ActiveRecord::Schema.define(version: 2021_07_12_134809) do
   add_foreign_key "dishes", "categories"
   add_foreign_key "dishes", "measures"
   add_foreign_key "dishes", "pricing_types", column: "pricing_types_id"
+  add_foreign_key "order_items", "day_menus_dishes"
+  add_foreign_key "order_items", "orders"
+  add_foreign_key "orders", "day_menus"
 end

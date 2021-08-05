@@ -1,0 +1,8 @@
+<h1>Orders </h1>
+<%= link_to 'New Order',new_order_path%>
+<% @orders.each do |order|%>
+	<h4><%= order.day_menu.date%>
+		Created at: <%= order.created_at%>
+	<%= link_to 'More details',order_path(order)%>
+	<%= link_to 'Destroy Order',order_path(order),data:{method: :delete,confirm:'Are you sure?'}%>
+<%end%>
