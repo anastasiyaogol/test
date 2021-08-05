@@ -7,7 +7,7 @@
   		<%= form.label :pricing_type, "Search for pricing type:" %>
   		<%= form.select :pricing_type , PricingTypes.all.map{ |c| [c.name, "#{c.id}"] },{prompt: 'Select Pricing type'} %>
   		<%= form.label :sort_by_field, "Sort by field:" %>
-  		<%= form.select :sort_by_field , ['date','day_price','dishes.name','dishes.units'],{prompt: 'Select sorting type'} %>
+  		<%= form.select :sort_by_field , ['dishes.name','dishes.units'],{prompt: 'Select sorting type'} %>
   		<%= form.label :order_by, "Order by:" %>
   		<%= form.select :order_by , ['desc','asc'],{prompt: 'Select order type'} %>
   		<%= form.submit "Search" %>
