@@ -26,6 +26,7 @@ class OrdersController < ApplicationController
 
  	def update
  		@order = Order.find_by id: params[:id]
+ 		@order_items_attributes = params[:order][:order_items_attributes].values.collect { |value| { quantity: value['quantity'], day_menus_dish_id: value['day_menus_dish_id'] } }
  		if @order.update order_params
  			redirect_to orders_path
  		else
