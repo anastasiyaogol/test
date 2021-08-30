@@ -1,17 +1,22 @@
+ <% @order.errors.attribute_names.each do |msg| %>
+    <%if  msg.to_s.split('.').select {|e| e.start_with?("quantity")}.join(' ')  == 'quantity'%>
+    	<%@quantity = true%>
+    <%end%>
+<% end %>
 <%= form_with model:@order do |f|%>
 	<%= f.label :day_menu_id %>
 	<%= f.select :day_menu_id, DayMenu.all.map{ |c| [c.date, "#{c.id}"] },{prompt: 'Select Day Menu'},{:onchange => 'if (this.value) window.location.href="?day_menu_id=" + this.value'} %>
 		<% if @order.day_menu != nil %>
-			<%@order_grouped_by_categories.keys.each do |order_category|%>
-				<h3><%=order_category%></h3>
-				<%@order_grouped_by_categories[order_category].each do |day_menus_dish|%>
+			<%@order.day_menu.dishes_grouped_by_categories.keys.each do |order_category|%>
+				<h3><%=order_category.name%></h3>
+				<%@order.day_menu.dishes_grouped_by_categories[order_category].each do |day_menus_dish|%>
 					<div class="order_items">
-						<%@object_of_onchecked_day_menus_dish = @order.order_items.detect { |order_item|  order_item.day_menus_dish == day_menus_dish}%>
+						<%object_of_onchecked_day_menus_dish = @order.order_items.detect { |order_item|  order_item.day_menus_dish == day_menus_dish}%>
 						<% if @object_of_onchecked_day_menus_dish != nil %>
 							<%= f.hidden_field :id, {
-					  			id:"order_order_items_attributes_#{@object_of_onchecked_day_menus_dish.day_menus_dish_id}_id",
-					  			name:"order[order_items_attributes][#{@object_of_onchecked_day_menus_dish.day_menus_dish_id}][id]",
-					  			value:"#{@object_of_onchecked_day_menus_dish.id}"
+					  			id:"order_order_items_attributes_#{object_of_onchecked_day_menus_dish.day_menus_dish_id}_id",
+					  			name:"order[order_items_attributes][#{object_of_onchecked_day_menus_dish.day_menus_dish_id}][id]",
+					  			value:"#{object_of_onchecked_day_menus_dish.id}"
 							} %>
 						<% end %>
 						<%= f.hidden_field :_destroy, {
@@ -22,7 +27,7 @@
 						} %>
 						<%= f.check_box :day_menus_dish_id,{
 							class:"day_menus_dish_id_check_box",
-							checked:(@object_of_onchecked_day_menus_dish != nil),
+							checked:(object_of_onchecked_day_menus_dish != nil),
 							id:"order_order_items_attributes_#{day_menus_dish.id}_day_menus_dish_id",
 							name:"order[order_items_attributes][#{day_menus_dish.id}][day_menus_dish_id]",
 							:onchange=> "trigger_change_of_checkbox()"
@@ -35,12 +40,12 @@
 				  			id:"order_order_items_attributes_#{day_menus_dish.id}_quantity",
 				  			name:"order[order_items_attributes][#{day_menus_dish.id}][quantity]",
 				  			:onchange=> "set_price(this.id,#{day_menus_dish.day_price},#{day_menus_dish.dish.pricing_types.id},#{day_menus_dish.dish.units});",
-							:value => @object_of_onchecked_day_menus_dish ? @object_of_onchecked_day_menus_dish.quantity : day_menus_dish.dish.units,
-							class:"quantity"
+							:value => object_of_onchecked_day_menus_dish ? object_of_onchecked_day_menus_dish.quantity : day_menus_dish.dish.units,
+							:class => object_of_onchecked_day_menus_dish ? (object_of_onchecked_day_menus_dish.errors.empty? ? 'quantity' : 'error') : 'quantity'
 				  		} %>
 				  		<span><%= day_menus_dish.dish.measure.name %></span>
 				  		<span>Price: </span>
-				  		<span class="price"><%= @object_of_onchecked_day_menus_dish ? @object_of_onchecked_day_menus_dish.price : day_menus_dish.day_price %></span>
+				  		<span class="price"><%= object_of_onchecked_day_menus_dish ? object_of_onchecked_day_menus_dish.price : day_menus_dish.day_price %></span>
 				  		<span>grn</span>
 				  	</div>
 			  	<% end %>
@@ -57,10 +62,10 @@
 		var quantity = elem.value;
 		var field_price = elem.closest('.order_items').getElementsByClassName('price')[0];
 		if (pricing_type == 1) {
-			field_price.innerHTML = price*quantity/units;
+			field_price.innerHTML = (price*quantity/units).toFixed(2);
 		}
 		else if (pricing_type == 2) {
-			field_price.innerHTML = quantity*price;
+			field_price.innerHTML = (quantity*price).toFixed(2);
 		}
 	}
 	$(document).on('ready',function() {
@@ -79,19 +84,24 @@
 		}
 	}
 	function set_total_price() {
-		var all_order_items = document.getElementsByClassName('order_items');
+		var all_order_items = $(document).find('.order_items');
 		var price = [];
-		for (var order_item of all_order_items) {
-			var check_box = order_item.getElementsByClassName('day_menus_dish_id_check_box')[0];
-			if (check_box.checked) {
-				price.push(order_item.getElementsByClassName('price')[0].innerHTML);
+		$.each(all_order_items,function(index,value) {
+			var check_box = $(value).find('.day_menus_dish_id_check_box');
+			if (check_box.prop("checked")) {
+				price.push($(value).find('.price').html());
 			}
-		}
+		});
 		price = price.map(i=>x+=Number(i), x=0).reverse()[0];
-		var total_price = document.getElementsByClassName('total_price')[0];
-		total_price.innerHTML = price;
+		var total_price = $(document).find('.total_price');
+		total_price.html(price);
 	}
 	function trigger_change_of_checkbox() {
 		$('.quantity').trigger('change');
 	}
 </script>
+<style>
+   .error { 
+    	border-color: red; 
+   }
+ </style>

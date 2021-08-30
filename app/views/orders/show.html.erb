@@ -2,13 +2,14 @@
 <h3><%= link_to 'Edit Order',edit_order_path(@order)%></h3>
 <%@order_grouped_by_categories.keys.each do |order_category|%>
 	<h3><%=order_category%></h3>
-		<%@order_grouped_by_categories[order_category].each do |order|%>
+		<%@order_grouped_by_categories[order_category].each do |order_item|%>
 		<div>
-			<span><%=order.day_menus_dish.dish.name%></span>
-			<span><%=order.quantity%></span>
-			<span><%=order.day_menus_dish.dish.measure.name%></span>
-			<span><%=order.price%> grn</span>
-			<span>Pricing type: <%=order.day_menus_dish.dish.pricing_types.name%></span>
+			<span><%=order_item.day_menus_dish.dish.name%></span>
+			<span><%=order_item.quantity%></span>
+			<span><%=order_item.day_menus_dish.dish.measure.name%></span>
+			<span><%=order_item.price%> grn</span>
+			<span>Pricing type: <%=order_item.day_menus_dish.dish.pricing_types.name%></span>
 		</div>
 	<%end%>
 <%end%>
+<%=@order.total_price%>
