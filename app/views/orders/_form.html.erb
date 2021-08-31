@@ -1,9 +1,4 @@
- <% @order.errors.attribute_names.each do |msg| %>
-    <%if  msg.to_s.split('.').select {|e| e.start_with?("quantity")}.join(' ')  == 'quantity'%>
-    	<%@quantity = true%>
-    <%end%>
-<% end %>
-<%= form_with model:@order do |f|%>
+ <%= form_with model:@order do |f|%>
 	<%= f.label :day_menu_id %>
 	<%= f.select :day_menu_id, DayMenu.all.map{ |c| [c.date, "#{c.id}"] },{prompt: 'Select Day Menu'},{:onchange => 'if (this.value) window.location.href="?day_menu_id=" + this.value'} %>
 		<% if @order.day_menu != nil %>
@@ -12,7 +7,7 @@
 				<%@order.day_menu.dishes_grouped_by_categories[order_category].each do |day_menus_dish|%>
 					<div class="order_items">
 						<%object_of_onchecked_day_menus_dish = @order.order_items.detect { |order_item|  order_item.day_menus_dish == day_menus_dish}%>
-						<% if @object_of_onchecked_day_menus_dish != nil %>
+						<% if object_of_onchecked_day_menus_dish != nil %>
 							<%= f.hidden_field :id, {
 					  			id:"order_order_items_attributes_#{object_of_onchecked_day_menus_dish.day_menus_dish_id}_id",
 					  			name:"order[order_items_attributes][#{object_of_onchecked_day_menus_dish.day_menus_dish_id}][id]",
@@ -94,7 +89,12 @@
 		});
 		price = price.map(i=>x+=Number(i), x=0).reverse()[0];
 		var total_price = $(document).find('.total_price');
-		total_price.html(price);
+		if (price == undefined) {
+			total_price.html(0);
+		}
+		else {
+			total_price.html(price);
+		}
 	}
 	function trigger_change_of_checkbox() {
 		$('.quantity').trigger('change');
