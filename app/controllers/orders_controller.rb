@@ -11,8 +11,9 @@ class OrdersController < ApplicationController
 	def create
 		@order = Order.new order_params
 		if @order.save
-			redirect_to orders_path
+			redirect_to orders_path, notice:"Order has been successfully created"
 		else
+			flash[:alert] = "Order hasn't been successfully created,check your inputs"
 			render :new
 		end
 	end
@@ -25,7 +26,7 @@ class OrdersController < ApplicationController
  		if @order.update order_params
  			redirect_to orders_path, notice:"Order has been successfully updated"	
  		else
- 			flash[:alert] = "Order hasn't been successfully updated,check your inputs"
+ 			flash[:alert] = "Order hasn't been successfully created,check your inputs: #{@order.errors.full_messages.join('.')}"
  			render :edit
  		end
  	end
